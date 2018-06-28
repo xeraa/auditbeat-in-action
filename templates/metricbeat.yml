@@ -1,0 +1,49 @@
+metricbeat.modules:
+
+- module: system
+  metricsets:
+    - cpu
+    - load
+    - core
+    - diskio
+    - filesystem
+    - fsstat
+    - memory
+    - network
+    - process
+    - process_summary
+    - socket
+  enabled: true
+  period: 10s
+  processes: ['.*']
+  cgroups: true
+  process.include_top_n:
+    enabled: true
+    by_cpu: 20
+    by_memory: 20
+
+
+name: "{{ inventory_hostname }}"
+tags: ["{{ env }}", "lightsail"]
+
+
+processors:
+- add_cloud_metadata: ~
+- add_host_metadata: ~
+
+
+xpack.monitoring.enabled: true
+
+
+output.elasticsearch:
+  hosts: ["{{ elasticsearch_host }}"]
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"
+
+
+setup:
+  kibana:
+    host: "{{ kibana_host }}"
+    username: "{{ elasticsearch_user }}"
+    password: "{{ elasticsearch_password }}"
+  dashboards.enabled: true

@@ -1,0 +1,21 @@
+{
+  "cluster": [],
+  "indices": [
+    {
+      "names": [
+        "*"
+      ],
+      "privileges": [
+        "*"
+      ],
+      "field_security": {
+        "grant": [
+          "*"
+        ]
+      }
+    }
+  ],
+  "run_as": [],
+  "metadata": {},
+  "type": "role"
+}

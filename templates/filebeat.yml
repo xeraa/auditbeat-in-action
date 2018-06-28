@@ -1,0 +1,36 @@
+filebeat.prospectors:
+
+
+filebeat.modules:
+- module: auditd
+- module: nginx
+- module: osquery
+- module: system
+
+
+name: "{{ inventory_hostname }}"
+tags: ["{{ env }}", "lightsail"]
+
+
+processors:
+- add_cloud_metadata: ~
+- add_host_metadata: ~
+
+
+xpack.monitoring.enabled: true
+
+
+output.elasticsearch:
+  hosts: ["{{ elasticsearch_host }}"]
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"
+  #"${ES_PWD}"
+
+
+setup:
+  kibana:
+    host: "{{ kibana_host }}"
+    username: "{{ elasticsearch_user }}"
+    password: "{{ elasticsearch_password }}"
+    #"${ES_PWD}"
+  dashboards.enabled: true

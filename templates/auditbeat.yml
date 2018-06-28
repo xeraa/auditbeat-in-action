@@ -1,0 +1,79 @@
+auditbeat.modules:
+
+
+- module: auditd
+  resolve_ids: true
+  failure_mode: silent
+  backlog_limit: 8196
+  rate_limit: 0
+  include_raw_message: false
+  include_warnings: false
+  audit_rules: |
+    ## Define audit rules here.
+    ## Create file watches (-w) or syscall audits (-a or -A). For example:
+
+    # Things that affect identity
+    -w /etc/group -p wa -k identity
+    -w /etc/passwd -p wa -k identity
+    -w /etc/gshadow -p wa -k identity
+    -w /etc/shadow -p wa -k identity
+    -w /etc/security/opasswd -p wa -k identity
+
+    # Log read access to passwd from selected users (1001=developers)
+    -a exit,always -F path=/etc/passwd -F perm=r -F uid=1001 -k developers-passwd-read
+
+    # Log permission errors
+    -a always,exit -F arch=b64 -S open,creat,truncate,ftruncate,openat,open_by_handle_at -F exit=-EPERM -k access
+
+    # Log processes that call the `socket` system call
+    -a always,exit -F arch=b64 -S socket -F a0=2 -k socket
+    -a always,exit -F arch=b64 -S socket -F a0=10 -k socket
+
+    # Detect when an admin may be abusing power by looking in a user's home directory
+    -a always,exit -F dir=/home -F uid=0 -F auid>=1000 -F auid!=4294967295 -C auid!=obj_uid -F key=power-abuse
+
+    # Log all executed processes
+    #-a always,exit -S execve
+
+    # Log all elevation of privileges
+    -a always,exit -F arch=b64 -S setuid -F a0=0 -F exe=/usr/bin/su -F key=elevated-privs
+    -a always,exit -F arch=b32 -S setuid -F a0=0 -F exe=/usr/bin/su -F key=elevated-privs
+    -a always,exit -F arch=b64 -S setresuid -F a0=0 -F exe=/usr/bin/sudo -F key=elevated-privs
+    -a always,exit -F arch=b32 -S setresuid -F a0=0 -F exe=/usr/bin/sudo -F key=elevated-privs
+    -a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=elevated-privs
+    -a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -F key=elevated-privs
+
+
+- module: file_integrity
+  paths:
+  - /var/www/html/
+  scan_at_start: true
+  scan_rate_per_sec: 50 MiB
+  file.max_file_size: 10 MiB
+  file.hash_types: [sha1]
+
+
+name: "{{ inventory_hostname }}"
+tags: ["{{ env }}", "lightsail"]
+
+
+processors:
+- add_cloud_metadata: ~
+- add_host_metadata: ~
+
+
+xpack.monitoring.enabled: true
+
+
+output.elasticsearch:
+  hosts: ["{{ elasticsearch_host }}"]
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"
+
+
+setup:
+  kibana:
+    host: "{{ kibana_host }}"
+    username: "{{ elasticsearch_user }}"
+    password: "{{ elasticsearch_password }}"
+  dashboards.enabled: true

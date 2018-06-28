@@ -1,0 +1,47 @@
+heartbeat.monitors:
+
+- type: http
+  urls: ["https://{{ domain }}"]
+  schedule: "@every 10s"
+  timeout: 3s
+  check.response.status: 200
+
+- type: http
+  urls: ["https://kibana.{{ domain }}"]
+  schedule: "@every 10s"
+  timeout: 3s
+  check.response.status: 200
+
+- type: http
+  urls: ["{{ elasticsearch_host }}"]
+  username: {{ elasticsearch_user }}
+  password: {{ elasticsearch_password }}
+  schedule: "@every 10s"
+  timeout: 3s
+  check.response.status: 200
+
+
+name: "{{ inventory_hostname }}"
+tags: ["{{ env }}", "lightsail"]
+
+
+processors:
+- add_cloud_metadata: ~
+- add_host_metadata: ~
+
+
+xpack.monitoring.enabled: true
+
+
+output.elasticsearch:
+  hosts: ["{{ elasticsearch_host }}"]
+  username: "{{ elasticsearch_user }}"
+  password: "{{ elasticsearch_password }}"
+
+
+setup:
+  kibana:
+    host: "{{ kibana_host }}"
+    username: "{{ elasticsearch_user }}"
+    password: "{{ elasticsearch_password }}"
+  dashboards.enabled: true
