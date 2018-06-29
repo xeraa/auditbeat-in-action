@@ -144,14 +144,6 @@
     - name: Install Filebeat
       apt: deb={{ elastic_download }}/downloads/beats/filebeat/filebeat-{{ elastic_version }}-amd64.deb
 
-    - name: Create (or replace) the Keystore for Filebeat
-      shell: filebeat keystore create --force
-
-    - name: Add (or overwrite) the Elasticsearch password for Filebeat
-      command: filebeat keystore add ES_PWD --stdin --force
-      args:
-        stdin: "{{ elasticsearch_password }}"
-
     - name: Change the Filebeat configuration
       template: src=templates/filebeat.yml dest=/etc/filebeat/filebeat.yml
 
