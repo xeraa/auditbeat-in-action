@@ -16,6 +16,7 @@
 1. Show additional dashboards
   * *[Filebeat System] New users and groups*
   * *[Filebeat System] Sudo commands*
+  * *[Osquery Result] Compliance pack* (pick a long enough time range to get all the data)
 
 
 
