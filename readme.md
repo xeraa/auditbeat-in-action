@@ -37,4 +37,4 @@ When you are done, remove the instances, DNS settings, and key with `terraform d
 
 ## Todo
 
-* Socket example
+* Socket example; maybe chat with `netcat -l 1024` and `telnet localhost 1024`?
