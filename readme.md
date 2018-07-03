@@ -33,3 +33,8 @@ Make sure you have run this before the demo.
 
 When you are done, remove the instances, DNS settings, and key with `terraform destroy`.
 
+
+
+## Todo
+
+* Socket example
