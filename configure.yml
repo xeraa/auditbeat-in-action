@@ -295,6 +295,9 @@
     - name: Provide an HTML index
       template: src=templates/index.html dest=/var/www/html/index.html
 
+    - name: Restart Auditbeat to make sure it picks up the newly monitored directory
+      service: name=auditbeat state=restarted
+
     - name: Restart nginx and make sure it autostarts
       service: name=nginx state=restarted enabled=yes
 
