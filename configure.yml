@@ -223,22 +223,6 @@
     - name: Restart Metricbeat and make sure it autostarts
       service: name=metricbeat state=restarted enabled=yes
 
-    #- name: Set metricbeat-* as the default index pattern
-    #  uri:
-    #    url: "{{kibana_host}}api/kibana/settings/defaultIndex"
-    #    body_format: json
-    #    method: POST
-    #    user: "{{ elasticsearch_user }}"
-    #    password: "{{ elasticsearch_password }}"
-    #    headers:
-    #      kbn-xsrf: kibana
-    #    body:
-    #      value: metricbeat-*
-    #    status_code:
-    #      - 201
-    #      - 200
-    #  run_once: true
-
 
     # Packetbeat
     - name: Install Packetbeat
