@@ -15,11 +15,18 @@ packetbeat.protocols:
   ports: [53]
 
 - type: http
-  ports: [80, 8080]
-  real_ip_header: "X-Forwarded-For"
+  ports: [80]
 
 - type: tls
   ports: [443]
+
+
+packetbeat.procs:
+  enabled: true
+  monitored:
+
+    - process: nginx
+      cmdline_grep: nginx
 
 
 name: "{{ inventory_hostname }}"
