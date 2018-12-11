@@ -189,6 +189,13 @@
     - name: Restart Auditbeat and make sure it autostarts
       service: name=auditbeat state=restarted enabled=yes
 
+    - name: Wait if Auditbeat is actually running
+      pause: minutes=1
+
+    - name: Get the state of all services and check the status of Auditbeat
+      service_facts: ~
+      failed_when: ansible_facts.services.auditbeat.state != "running"
+
 
     # Filebeat
     - name: Install Filebeat
@@ -199,6 +206,13 @@
 
     - name: Restart Filebeat and make sure it autostarts
       service: name=filebeat state=restarted enabled=yes
+
+    - name: Wait if Filebeat is actually running
+      pause: minutes=1
+
+    - name: Get the state of all services and check the status of Filebeat
+      service_facts: ~
+      failed_when: ansible_facts.services.filebeat.state != "running"
 
 
     # Heartbeat
@@ -211,6 +225,13 @@
     - name: Restart Heartbeat and make sure it autostarts
       service: name=heartbeat-elastic state=restarted enabled=yes
 
+    - name: Wait if Heartbeat is actually running
+      pause: minutes=1
+
+    - name: Get the state of all services and check the status of Heartbeat
+      service_facts: ~
+      failed_when: ansible_facts.services["heartbeat-elastic"].state != "running"
+
 
     # Metricbeat
     - name: Install Metricbeat
@@ -222,6 +243,13 @@
     - name: Restart Metricbeat and make sure it autostarts
       service: name=metricbeat state=restarted enabled=yes
 
+    - name: Wait if Metricbeat is actually running
+      pause: minutes=1
+
+    - name: Get the state of all services and check the status of Metricbeat
+      service_facts: ~
+      failed_when: ansible_facts.services.metricbeat.state != "running"
+
 
     # Packetbeat
     - name: Install Packetbeat
@@ -232,6 +260,13 @@
 
     - name: Restart Packetbeat and make sure it autostarts
       service: name=packetbeat state=restarted enabled=yes
+
+    - name: Wait if Packetbeat is actually running
+      pause: minutes=1
+
+    - name: Get the state of all services and check the status of Packetbeat
+      service_facts: ~
+      failed_when: ansible_facts.services.packetbeat.state != "running"
 
 
     # nginx
