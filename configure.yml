@@ -143,6 +143,7 @@
         method: PUT
         user: "{{ elasticsearch_user }}"
         password: "{{ elasticsearch_password }}"
+        force_basic_auth: true
         body:
           template: "*"
           settings:
@@ -161,6 +162,7 @@
         method: PUT
         user: "{{ elasticsearch_user }}"
         password: "{{ elasticsearch_password }}"
+        force_basic_auth: true
         body: "{{ lookup('file','security_role_dashboard.json') }}"
         status_code:
           - 201
@@ -173,6 +175,7 @@
         method: PUT
         user: "{{ elasticsearch_user }}"
         password: "{{ elasticsearch_password }}"
+        force_basic_auth: true
         body: "{{ lookup('file','security_user_dashboard.json') }}"
         status_code:
           - 201
