@@ -15,7 +15,7 @@ resource "aws_lightsail_key_pair" "auditd_key_pair" {
 resource "aws_lightsail_instance" "instance" {
   name              = "instance"
   availability_zone = "${var.region}a"
-  blueprint_id      = "ubuntu_16_04"
+  blueprint_id      = "${var.operating_system}"
   bundle_id         = "${var.size}"
   key_pair_name     = "auditd_key_pair"
   depends_on        = ["aws_lightsail_key_pair.auditd_key_pair"]
