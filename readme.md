@@ -8,7 +8,6 @@
 1. Show the dashboard *[Filebeat Auditd] Audit Events* and show additional Filebeat modules:
   * *[Filebeat System] New users and groups*
   * *[Filebeat System] Sudo commands*
-  * *[Osquery Result] Compliance pack* (pick a long enough time range to get all the data)
 1. Show the Auditbeat configuration and the raw data in the Discover tab (also point out the `host` and `meta.cloud` data).
 1. Show the *[Auditbeat Auditd] Overview* dashboard.
 1. `ssh elastic-user@xeraa.wtf` with a bad password and show the failed login on the *[Filebeat System] SSH login attempts* dashboard.
@@ -36,4 +35,4 @@ When you are done, remove the instances, DNS settings, and key with `terraform d
 
 ## Todo
 
-* Socket example; maybe chat with `netcat -l 1024` and `telnet localhost 1024`?
+* Socket example; maybe chat with `netcat -l 1025` and `telnet <ip> 1025`?
