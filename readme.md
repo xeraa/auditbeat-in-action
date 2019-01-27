@@ -4,7 +4,7 @@
 
 ## Features
 
-1. See the output of `sudo aureport` and the underlying log */var/log/audit/audit.log*. Also point to the rules in */etc/audit/audit.rules*.
+1. See the output of `sudo aureport` and the underlying events with `sudo ausearch --raw` or filter them with `sudo ausearch --success no`. Optionally point to the rules in */etc/audit/audit.rules*.
 1. Show the dashboard *[Filebeat Auditd] Audit Events* and show additional Filebeat modules:
   * *[Filebeat System] New users and groups*
   * *[Filebeat System] Sudo commands*
