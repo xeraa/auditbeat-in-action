@@ -139,6 +139,9 @@
     - name: Change the Auditbeat configuration
       template: src=templates/auditbeat.yml dest=/etc/auditbeat/auditbeat.yml
 
+    - name: Stop Auditd since it cannot run in parallel with Auditbeat
+      service: name=auditd state=stopped
+
     - name: Restart Auditbeat and make sure it autostarts
       service: name=auditbeat state=restarted enabled=yes
 
