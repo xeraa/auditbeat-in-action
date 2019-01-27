@@ -11,10 +11,13 @@
 1. Show the Auditbeat configuration and the raw data in the Discover tab (also point out the `host` and `meta.cloud` data).
 1. Show the *[Auditbeat Auditd] Overview* dashboard.
 1. `ssh elastic-user@xeraa.wtf` with a bad password and show the failed login on the *[Filebeat System] SSH login attempts* dashboard.
-1. SSH with the same user and make it work this time. Run `service nginx restart` and pick the `elastic-admin` user to run the command. Show the execution on the *[Auditbeat Auditd] Executions* dashboard by filtering down to the `elastic-user` user.
-1. Run it with `cat /etc/passwd` and find the event in the Discover tab and filter for `tags is developers-passwd-read` (check the group with `id elastic-user`).
+1. SSH with the same user and make it work this time.
+1. Run `cat /etc/passwd` and find the event in the Discover tab and filter for `tags is passwd-access` and filter down on `user.name_map.uid`.
+1. For a more fine grained filter run `cat /etc/pam.conf` and find the event with `tags is developers-pam-read`.
+1. Run `service nginx restart` and pick the `elastic-admin` user to run the command. Show the execution on the *[Auditbeat Auditd] Executions* dashboard by filtering down to the `elastic-user` user.
 1. Detect when an admin may be abusing power by looking in a user's home directory. Let the `ssh elastic-admin@xeraa.wtf` check the directory */home/elastic-user* and read the file */home/elastic-user/secret.txt* (will require sudo). Search for the tag `power-abuse` to see the violation.
-1. Open a socket with `netcat -l 1025` and start a chat with `telnet <hostname> 1025`. Find it by doing a full-text search for `1025`.
+1. Show */etc/auditbeat/auditbeat.yml* that requires sudo privileges and find the call in `tags is elevated-privs`.
+1. Open a socket with `netcat -l 1025` and start a chat with `telnet <hostname> 1025`. Find it by doing a full-text search for `netcat`, which will find both the `open-socket` and `process-execution` events. `connect` system calls are for incoming connections.
 1. Change the content of the website in `/var/www/html/index.html`. See the change in the *[Auditbeat File Integrity] Overview* dashboard. Depending on the editor the actions might be slightly different; *nano* will generate an `updated` event wheras *vi* does a `moved` and `deleted`.
 
 
