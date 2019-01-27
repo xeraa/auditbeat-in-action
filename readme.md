@@ -15,7 +15,7 @@
 1. Run it with `cat /etc/passwd` and find the event in the Discover tab and filter for `tags is developers-passwd-read` (check the group with `id elastic-user`).
 1. Detect when an admin may be abusing power by looking in a user's home directory. Let the `ssh elastic-admin@xeraa.wtf` check the directory */home/elastic-user* and read the file */home/elastic-user/secret.txt* (will require sudo). Search for the tag `power-abuse` to see the violation.
 1. Open a socket with `netcat -l 1025` and start a chat with `telnet <hostname> 1025`. Find it by doing a full-text search for `1025`.
-1. Change the content of the website in `/var/www/html/index.html`. See the change in the *[Auditbeat File Integrity] Overview* dashboard.
+1. Change the content of the website in `/var/www/html/index.html`. See the change in the *[Auditbeat File Integrity] Overview* dashboard. Depending on the editor the actions might be slightly different; *nano* will generate an `updated` event wheras *vi* does a `moved` and `deleted`.
 
 
 

@@ -52,6 +52,9 @@ auditbeat.modules:
 - module: file_integrity
   paths:
   - /var/www/html/
+  exclude_files:
+  - '(?i)\.sw[nopx]$'
+  - '~$'
   scan_at_start: true
   scan_rate_per_sec: 50 MiB
   file.max_file_size: 10 MiB
