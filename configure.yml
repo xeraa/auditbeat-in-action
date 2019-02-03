@@ -28,15 +28,8 @@
       apt: name=auditd
 
     - name: Install NTP to avoid time drift and PIP to manage Python dependencies plus its build tools
-      apt: name={{ item }}
-      with_items:
-        - ntp
-        - ntpdate
-        - python3-pip
-        - build-essential
-        - libssl-dev
-        - libffi-dev
-        - whois
+      apt:
+        name: [ 'ntp', 'ntpdate', 'python3-pip', 'build-essential', 'libssl-dev', 'libffi-dev', 'whois' ]
 
     - name: Install the pyOpenSSL library, so Ansible can use it to check TLS certificates
       pip: name=pyopenssl
