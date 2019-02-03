@@ -42,6 +42,21 @@ auditbeat.modules:
     -a always,exit -S execve -k process-execution
 
 
+- module: system
+  datasets:
+    - host # General host information, e.g. uptime, IPs
+    - user # User information
+  period: 1m
+  user.detect_password_changes: true
+
+
+- module: system
+  datasets:
+    - process # Started and stopped processes
+    - socket  # Opened and closed sockets
+  period: 1s
+
+
 - module: file_integrity
   paths:
   - /var/www/html/
