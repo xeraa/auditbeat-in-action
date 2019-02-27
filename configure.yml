@@ -126,6 +126,9 @@
 
 
     # Beats
+    - name: Stop Auditd since it cannot run in parallel with Auditbeat
+      service: name=auditd state=stopped
+
     - name: Set the Elasticsearch password for Beats
       lineinfile:
         dest: /tmp/cred
