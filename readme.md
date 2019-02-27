@@ -35,3 +35,9 @@ Make sure you have run this before the demo.
 1. Apply the configuration to the instance with `ansible-playbook configure.yml`.
 
 When you are done, remove the instances, DNS settings, and key with `terraform destroy`.
+
+
+
+## Todo
+
+* Update Auditbeat module when 6.7 is out: [https://www.elastic.co/guide/en/beats/auditbeat/6.7/auditbeat-module-system.html#\_suggested\_configuration](https://www.elastic.co/guide/en/beats/auditbeat/6.7/auditbeat-module-system.html#_suggested_configuration)
