@@ -18,11 +18,11 @@ auditbeat.modules:
     ## For a full list of system calls see /usr/include/x86_64-linux-gnu/asm/unistd_64.h.
     ## Add a keyword (-k) to the log event.
 
-    # Log read, write, execute, attribute change of passwd
-    -w /etc/passwd -p rwxa -k passwd-access
+    # Log read, write, execute, attribute change of pam.conf
+    -w /etc/pam.conf -p rwxa -k pam-access
 
     # Log read access to passwd from selected users (1001=developers)
-    -a always,exit -F path=/etc/pam.conf -F perm=r -F uid=1001 -k developers-pam-read
+    -a always,exit -F path=/etc/passwd -F perm=r -F uid=1001 -k developers-passwd-read
 
     # Detect when an admin may be abusing power by looking in a user's home directory
     -a always,exit -F dir=/home -F uid=0 -F auid>=1000 -F auid!=4294967295 -C auid!=obj_uid -k power-abuse
