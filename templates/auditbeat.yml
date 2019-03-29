@@ -44,17 +44,19 @@ auditbeat.modules:
 
 - module: system
   datasets:
-    - host # General host information, e.g. uptime, IPs
-    - user # User information
+    - host
+    - user
+    - package
+    - login
   period: 1m
   user.detect_password_changes: true
 
 
 - module: system
   datasets:
-    - process # Started and stopped processes
-    - socket  # Opened and closed sockets
-  period: 1s
+    - process
+    - socket
+  period: 2s
 
 
 - module: file_integrity
