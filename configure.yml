@@ -22,14 +22,15 @@
 
     # System
     - name: Update and upgrade apt packages
-      apt: upgrade=dist
+      apt: upgrade=dist force_apt_get=yes
 
     - name: Install auditd, which this example is about
-      apt: name=auditd
+      apt: name=auditd force_apt_get=yes
 
     - name: Install NTP to avoid time drift and PIP to manage Python dependencies plus its build tools
       apt:
         name: [ 'ntp', 'ntpdate', 'python3-pip', 'build-essential', 'libssl-dev', 'libffi-dev', 'whois' ]
+        force_apt_get: yes
 
     - name: Install the pyOpenSSL library, so Ansible can use it to check TLS certificates
       pip: name=pyopenssl
@@ -138,7 +139,7 @@
         mode: 0600
 
     - name: Get the Beats
-      apt: deb={{ elastic_download }}/downloads/beats/{{ item }}/{{ item }}-{{ elastic_version }}-amd64.deb
+      apt: deb={{ elastic_download }}/downloads/beats/{{ item }}/{{ item }}-{{ elastic_version }}-amd64.deb force_apt_get=yes
       loop:
       - auditbeat
       - filebeat
@@ -213,7 +214,7 @@
 
     # nginx
     - name: Install nginx
-      apt: name=nginx
+      apt: name=nginx force_apt_get=yes
 
     - name: Stop nginx so that Certbot can bind to port 80
       service: name=nginx state=stopped
@@ -222,7 +223,7 @@
       apt_repository: repo="ppa:certbot/certbot"
 
     - name: Install certbot and update the cache for the new PPA
-      apt: name=python-certbot-nginx update_cache=yes
+      apt: name=python-certbot-nginx update_cache=yes force_apt_get=yes
 
     - name: Add domains to the certificate
       set_fact:
@@ -241,7 +242,13 @@
         creates=/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
 
     - name: Add crontab to renew certificates every second month on Sunday night
-      cron: minute="30" hour="3" weekday="0" month="*/2" job="service nginx stop && certbot renew >> /var/log//var/log/letsencrypt/renew.log && service nginx start"
+      cron:
+        name: Renew Let's Encrypt certificate
+        minute: "30"
+        hour: "3"
+        weekday: "0"
+        month: "*/2"
+        job: service nginx stop && certbot renew >> /var/log//var/log/letsencrypt/renew.log && service nginx start
 
     - name: Generate strong dhparams, but only if the file doesn't exist
       command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048 creates=/etc/ssl/certs/dhparam.pem
