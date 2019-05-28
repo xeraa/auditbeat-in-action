@@ -39,9 +39,4 @@ output.elasticsearch:
   password: "${ES_PWD}"
 
 
-setup:
-  kibana:
-    host: "{{ kibana_host }}"
-    username: "{{ elasticsearch_user }}"
-    password: "${ES_PWD}"
-  dashboards.enabled: true
+# No dashboards to import as of 7.0
