@@ -93,7 +93,7 @@
           settings:
             number_of_shards: 1
             number_of_replicas: 0
-            refresh_interval: 2s
+            refresh_interval: 1s
         status_code:
           - 201
           - 200
