@@ -1,5 +1,5 @@
 {
-  "username": "user-admin",
+  "username": "{{ attendee_user }}",
   "password": "$2a$10$jGHas/yjV7dY/Pw2a0aeDu92zu.M16dkGbwdf8zGT8uXdMZ3Q9ghi",
   "roles": [
     "read_dashboard",

@@ -114,7 +114,7 @@
 
     - name: Create the dashboard user with the credentials "admin" and "password"
       uri:
-        url: "{{elasticsearch_host}}_security/user/user-admin"
+        url: "{{elasticsearch_host}}_security/user/{{ attendee_user }}"
         body_format: json
         method: PUT
         user: "{{ elasticsearch_user }}"
