@@ -112,7 +112,7 @@
           - 201
           - 200
 
-    - name: Create the dashboard user with the credentials "admin" and "password"
+    - name: Create the dashboard user
       uri:
         url: "{{elasticsearch_host}}_security/user/{{ attendee_user }}"
         body_format: json
@@ -120,7 +120,7 @@
         user: "{{ elasticsearch_user }}"
         password: "{{ elasticsearch_password }}"
         force_basic_auth: true
-        body: "{{ lookup('file','security_user_dashboard.json') }}"
+        body: "{{ lookup('template','security_user_dashboard.json') }}"
         status_code:
           - 201
           - 200
