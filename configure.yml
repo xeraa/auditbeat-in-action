@@ -303,3 +303,8 @@
         subject_alt_name:
           - "DNS:{{ domain }}"
       when: inventory_hostname == "frontend." + domain
+
+
+    # Get firejail for seccomp demos
+    - name: Get and install seccomp
+      apt: deb=https://netix.dl.sourceforge.net/project/firejail/firejail/firejail_0.9.60_1_amd64.deb
