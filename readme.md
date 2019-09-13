@@ -41,3 +41,6 @@ When you are done, remove the instances, DNS settings, and key with `terraform d
 
 
 ## Todo
+
+* Fix https://dashboard.xeraa.wtf
+* Check that `"event.action": "violated-seccomp-policy"` are being collected (and that dmesg is working).
