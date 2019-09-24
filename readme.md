@@ -18,7 +18,7 @@
 1. Detect when an admin may be abusing power by looking in a user's home directory. Let the `ssh elastic-admin@xeraa.wtf` check the directory */home/elastic-user* and read the file */home/elastic-user/secret.txt* (will require sudo). Search for the tag `power-abuse` to see the violation.
 1. Show */etc/auditbeat/auditbeat.yml* that requires sudo privileges and find the call in `tags is elevated-privs`.
 1. Open a socket with `netcat -l 1025` and start a chat with `telnet <hostname> 1025`. Find it in the *[Auditbeat System] Socket Dashboard ECS* in the destination ports list and filter down on it. Optionally show the alternative with Auditd by filtering in *Discover* on `open-socket`.
-1. Show a seccomp violation by runnin `firejail --noprofile --seccomp.drop=bind -c nc -v -l 1025`. This will show up as `"event.action": "violated-seccomp-policy"` in the Auditbeat events.
+1. Show a seccomp violation by runnin `firejail --noprofile --seccomp.drop=bind -c nc -v -l 1025`. This will show up as `"event.action": "violated-seccomp-policy"` in the Auditbeat events. Alternatively you can find the event with `dmesg` on the shell.
 1. Show the other *[Auditbeat System]* dashboard and be sure to point out that this is not based on Auditd any more. For example the one listing all installed packages and their version could come in handy if there is a vulnerable binary out and you want to see where you still need to patch.
 1. Change the content of the website in `/var/www/html/.index.html`. See the change in the *[Auditbeat File Integrity] Overview ECS* dashboard. Depending on the editor the actions might be slightly different; *nano* will generate an `updated` event wheras *vi* does a `moved` and `deleted`.
 1. In the SIEM tab search for `1025` (the port). Drop the process `netcat` into the Timeline view and see all the related details for it. Add a comment to the event when we opened the port.
@@ -43,4 +43,3 @@ When you are done, remove the instances, DNS settings, and key with `terraform d
 ## Todo
 
 * Fix https://dashboard.xeraa.wtf
-* Check that `"event.action": "violated-seccomp-policy"` are being collected (and that dmesg is working).
