@@ -1,5 +1,5 @@
 # Version to install
-elastic_version: 7.3.2
+elastic_version: 7.4.1
 elastic_download: https://artifacts.elastic.co
 
 
