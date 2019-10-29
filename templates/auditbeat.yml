@@ -3,11 +3,12 @@ auditbeat.modules:
 
 - module: auditd
   resolve_ids: true
-  failure_mode: silent
-  backlog_limit: 8196
+  failure_mode: log
+  backlog_limit: 16384  # should take 141 MiB of RAM in worst case
   rate_limit: 0
   include_raw_message: false
   include_warnings: false
+  backpressure_strategy: auto
   audit_rules: |
     ## Define audit rules here.
     ## Create file watches (-w) or syscall audits (-a action,filter).
