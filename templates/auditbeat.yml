@@ -66,10 +66,12 @@ auditbeat.modules:
   exclude_files:
   - '(?i)\.sw[nopx]$'
   - '~$'
+  - '/\.git($|/)'
   scan_at_start: true
   scan_rate_per_sec: 50 MiB
-  file.max_file_size: 10 MiB
+  file.max_file_size: 100 MiB
   file.hash_types: [sha1]
+  recursive: true
 
 
 name: "{{ inventory_hostname }}"
