@@ -12,7 +12,6 @@
 1. Show the *[Auditbeat Auditd] Overview ECS* dashboard.
 1. `ssh elastic-user@xeraa.wtf` with a bad password and show the failed login on the *[Filebeat System] SSH login attempts* dashboard.
 1. SSH with the same user and make it work this time.
-1. Run `cat /etc/pam.conf` and find the event in the Discover tab and filter for `tags is pam-access`.
 1. For a more fine grained filter run `cat /etc/passwd` and find the event with `tags is developers-passwd-read`.
 1. Run `service nginx restart` and pick the `elastic-admin` user to run the command. Show the execution on the *[Auditbeat Auditd] Executions ECS* dashboard by filtering down to the `elastic-user` user.
 1. Detect when an admin may be abusing power by looking in a user's home directory. Let the `ssh elastic-admin@xeraa.wtf` check the directory */home/elastic-user* and read the file */home/elastic-user/secret.txt* (will require sudo). Search for the tag `power-abuse` to see the violation.
