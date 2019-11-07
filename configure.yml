@@ -287,22 +287,9 @@
       openssl_certificate:
         path: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
         provider: assertonly
-        issuer:
-          O: Let's Encrypt
-        has_expired: false
         subject_alt_name:
           - "DNS:{{ inventory_hostname }}"
-
-    - name: Check HTTPS apex
-      openssl_certificate:
-        path: /etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem
-        provider: assertonly
-        issuer:
-          O: Let's Encrypt
-        has_expired: false
-        subject_alt_name:
           - "DNS:{{ domain }}"
-      when: inventory_hostname == "frontend." + domain
 
 
     # Get firejail for seccomp demos
