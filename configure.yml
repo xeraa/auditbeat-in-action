@@ -101,7 +101,7 @@
 
     - name: Create a role for a user to only view the dashboards
       uri:
-        url: "{{elasticsearch_host}}_security/role/role-read_dashboard"
+        url: "{{elasticsearch_host}}_security/role/read_dashboard"
         body_format: json
         method: PUT
         user: "{{ elasticsearch_user }}"

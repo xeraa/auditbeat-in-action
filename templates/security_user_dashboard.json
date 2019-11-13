@@ -1,9 +1,8 @@
 {
   "username": "{{ attendee_user }}",
-  "password": "$2a$10$jGHas/yjV7dY/Pw2a0aeDu92zu.M16dkGbwdf8zGT8uXdMZ3Q9ghi",
+  "password": "{{ attendee_password }}",
   "roles": [
-    "read_dashboard",
-    "kibana_dashboard_only_user"
+    "read_dashboard"
   ],
   "full_name": "Dashboard User",
   "email": "dashboard@xeraa.wtf",

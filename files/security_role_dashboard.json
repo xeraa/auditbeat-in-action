@@ -1,8 +1,5 @@
 {
-  "cluster": [],
-  "indices": [
-    {
-      "names": [
+      "names" : [
         "apm-*",
         "metricbeat-*",
         "packetbeat-*",
@@ -10,17 +7,36 @@
         "heartbeat-*",
         "auditbeat-*"
       ],
-      "privileges": [
+      "privileges" : [
         "read"
       ],
-      "field_security": {
-        "grant": [
+      "field_security" : {
+        "grant" : [
           "*"
         ]
-      }
+      },
+      "allow_restricted_indices" : false
     }
   ],
-  "run_as": [],
-  "metadata": {},
-  "type": "role"
+  "applications" : [
+    {
+      "application" : "kibana-.kibana",
+      "privileges" : [
+        "feature_discover.read",
+        "feature_visualize.read",
+        "feature_dashboard.read",
+        "feature_apm.read",
+        "feature_infrastructure.read",
+        "feature_logs.read",
+        "feature_siem.read",
+        "feature_uptime.read"
+      ],
+      "resources" : [
+        "*"
+      ]
+    }
+  ],
+  "run_as" : [ ],
+  "metadata" : { },
+  "type" : "role"
 }
