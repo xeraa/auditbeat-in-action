@@ -41,4 +41,4 @@ When you are done, remove the instances, DNS settings, and key with `terraform d
 
 ## Todo
 
-* Fix https://dashboard.xeraa.wtf
+None.
