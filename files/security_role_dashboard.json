@@ -1,4 +1,7 @@
 {
+  "cluster": [],
+  "indices": [
+    {
       "names" : [
         "apm-*",
         "metricbeat-*",
