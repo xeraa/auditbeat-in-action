@@ -28,6 +28,9 @@ tags: ["{{ env }}", "lightsail"]
 processors:
 - add_cloud_metadata: ~
 - add_host_metadata: ~
+- add_observer_metadata:
+    geo:
+      name: europe
 
 
 xpack.monitoring.enabled: true
