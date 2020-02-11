@@ -16,7 +16,6 @@
     - name: Install Python2 to make Ansible work
       raw: sudo apt-get update && sudo apt-get -y install python-minimal
 
-
   tasks:
 
 
@@ -34,6 +33,28 @@
 
     - name: Install the pyOpenSSL library, so Ansible can use it to check TLS certificates
       pip: name=pyopenssl
+
+
+    # Add David
+    - name: Add David's user
+      user:
+        name: david
+        groups: sudo
+        shell: /bin/bash
+        state: present
+
+    - name: Placing key for David
+      authorized_key:
+        user: david
+        key: "{{ lookup('file', './files/david.pub') }}"
+
+    - name: Allow passwordless sudo
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%sudo'
+        line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
 
 
     # Allow SSH logins
@@ -72,7 +93,7 @@
       lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^AllowUsers'
-        line: 'AllowUsers ubuntu elastic-user elastic-admin'
+        line: 'AllowUsers ubuntu david elastic-user elastic-admin'
         state: present
 
     - name: Restart SSH
