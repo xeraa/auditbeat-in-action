@@ -44,6 +44,3 @@ output.elasticsearch:
   hosts: ["{{ elasticsearch_host }}"]
   username: "{{ elasticsearch_user }}"
   password: "${ES_PWD}"
-
-
-# No dashboards to import as of 7.0

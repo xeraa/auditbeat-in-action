@@ -200,6 +200,14 @@
         path: /tmp/cred
         state: absent
 
+    - name: Run the setup for all the beats (except Heartbeat — not needed)
+      shell: "{{ item }} setup"
+      loop:
+      - auditbeat
+      - filebeat
+      - metricbeat
+      - packetbeat
+
     - name: Restart and make sure the Beats autostart
       service: name={{ item }} state=restarted enabled=yes
       loop:
