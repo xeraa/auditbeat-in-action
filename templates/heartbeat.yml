@@ -31,6 +31,10 @@ processors:
 - add_observer_metadata:
     geo:
       name: europe
+      location: 50.1105, 8.6822
+      continent_name: Europe
+      country_iso_code: DE
+      city_name: Frankfurt
 
 
 xpack.monitoring.enabled: true
