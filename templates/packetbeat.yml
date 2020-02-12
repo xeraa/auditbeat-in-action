@@ -48,4 +48,4 @@ output.elasticsearch:
   password: "${ES_PWD}"
 
 #cloud.id: ""
-#cloud.auth: "elastic:YOUR_PASSWORD"
+#cloud.auth: "{{ elasticsearch_user }}:${ES_PWD}"
