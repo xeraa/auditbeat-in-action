@@ -1,0 +1,39 @@
+{
+    "_comment": "Ubuntu Server 18.04 LTS (HVM) in the right region for Strigo",
+    "variables": {
+        "aws_access_key": "{{ env `AWS_ACCESS_KEY_ID` }}",
+        "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
+        "aws_region": "eu-central-1",
+        "source_ami": "ami-0b418580298265d5c",
+        "stack_version": "7.6.0"
+    },
+    "sensitive-variables": [ "aws_access_key", "aws_secret_key" ],
+    "builders": [
+        {
+          "type": "amazon-ebs",
+          "access_key": "{{ user `aws_access_key` }}",
+          "secret_key": "{{ user `aws_secret_key` }}",
+          "region": "{{ user `aws_region` }}",
+          "source_ami": "{{ user `source_ami` }}",
+          "instance_type": "t2.medium",
+          "associate_public_ip_address": true,
+          "ssh_username": "ubuntu",
+          "ami_name": "auditbeat-siem-{{ user `stack_version` }}-{{ timestamp }}",
+          "ami_groups": [ "all" ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "sleep 30",
+                "sudo apt-get update && sudo apt-get -y install python-minimal && sudo apt-get -y install ansible"
+            ]
+        },
+        {
+            "type": "ansible-local",
+            "playbook_file": "packer-ansible.yml",
+            "playbook_dir": "."
+        }
+    ]
+}

@@ -39,6 +39,15 @@ When you are done, remove the instances, DNS settings, and key with `terraform d
 
 
 
+## Packer Setup for Strigo
+
+To build an AWS AMI for [Strigo](https://strigo.io), use [Packer](https://packer.io). Using the [Ansible Local Provisioner](https://packer.io/docs/provisioners/ansible-local.html) you only need to have Packer installed locally (no Ansible). Build the AMI with `packer build packer-ansible.yml` and set up the training class on Strigo with the generated AMI and the user `ubuntu`.
+
+By setting `cloud: true` you won't add a local Elasticsearch and Kibana instance. But you must then add the `elasticsearch_user` and `elasticsearch_password` account to that cloud account for the setup to work, add `cloud.id` to all the Beats, and restart them.
+
+If things are failing for some reason: Run `packer build -debug packer-ansible.yml`, which will keep the instance running and save the SSH key in the current directory. Connect to it with `ssh -i ec2_amazon-ebs.pem ubuntu@ec2-X-X-X-X.eu-central-1.compute.amazonaws.com`; open ports as needed in the AWS Console since the instance will only open TCP/22 by default.
+
+
 ## Todo
 
 None.

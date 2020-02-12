@@ -1,0 +1,282 @@
+- hosts: 127.0.0.1
+  become: true
+  connection: local
+
+
+  vars:
+      # Elastic Stack setup
+      elastic_version: 7.6.0
+      elastic_download: https://artifacts.elastic.co
+      elasticsearch_host: http://localhost:9200/
+      elasticsearch_user: admin
+      elasticsearch_password: secret
+      kibana_host: http://localhost:5601
+      # Workshop setup
+      env: workshop
+      cloud: false
+
+
+  tasks:
+    - name: Update and upgrade apt packages
+      apt: upgrade=dist force_apt_get=yes
+
+    - name: Install auditd, which this example is about
+      apt: name=auditd force_apt_get=yes
+
+    - name: Install NTP to avoid time drift and some tools
+      apt:
+        name: [ 'ntp', 'ntpdate', 'build-essential', 'libssl-dev', 'whois' ]
+        force_apt_get: yes
+
+
+    - name: Add users for different auditing events
+      block:
+        - name: Add a group for developers
+          group:
+            name: developers
+            state: present
+        - name: Add a regular user
+          user:
+            name: elastic-user
+            password: $6$l7Sn6bScWFQXiC$YuhNHLTFpFrbKWu41aSGmgPkPYusesxsUEX01p8fkO2rApuVnutQVpx1JqJWXYS9eCrfo7oVsNT2PjLQ2lFOv1 #secret
+            groups: developers
+            shell: /bin/bash
+            state: present
+        - name: Create a file for that specific user only readable by them
+          template: src=templates/secret.txt dest=/home/elastic-user/secret.txt owner=elastic-user mode=0600
+        - name: Add a root user
+          user:
+            name: elastic-admin
+            password: $6$7z7Vma3Wv9Au$F2xYkqbDztG/o1sd7bHYeIq5.m73ueq1NmCd5mZMFIWg1ENgUFQK0FR01b3/DOX204KfZ1rH4z2Il1layxTgv1 #mysecret
+            groups: sudo
+            shell: /bin/bash
+            state: present
+
+
+    - name: Elasticsearch
+      block:
+        - name: Install Elasticsearch
+          apt: deb={{ elastic_download }}/downloads/elasticsearch/elasticsearch-{{ elastic_version }}-amd64.deb
+        - name: Stop Elasticsearch
+          service: name=elasticsearch state=stopped
+        - name: Change Elasticsearch's minimum memory usage
+          lineinfile:
+            dest: /etc/elasticsearch/jvm.options
+            regexp: "^-Xms"
+            line: "-Xms768m"
+            state: present
+        - name: Change Elasticsearch's maximum memory usage
+          lineinfile:
+            dest: /etc/elasticsearch/jvm.options
+            regexp: "^-Xmx"
+            line: "-Xmx768m"
+            state: present
+        - name: Do not swap
+          lineinfile:
+            dest: /etc/elasticsearch/elasticsearch.yml
+            regexp: "bootstrap.memory_lock"
+            line: "bootstrap.memory_lock: true"
+            state: present
+        - name: Enable monitoring of the Elastic Stack components
+          lineinfile:
+            dest: /etc/elasticsearch/elasticsearch.yml
+            regexp: "xpack.monitoring.collection.enabled"
+            line: "xpack.monitoring.collection.enabled: true"
+            state: present
+        - name: Enable security
+          lineinfile:
+            dest: /etc/elasticsearch/elasticsearch.yml
+            regexp: "xpack.security.enabled"
+            line: "xpack.security.enabled: true"
+            state: present
+        - name: Remove a user for Elasticsearch (just in case we want to make any changes)
+          command: /usr/share/elasticsearch/bin/elasticsearch-users userdel {{ elasticsearch_user }}
+          ignore_errors: true
+        - name: Create a user for Elasticsearch
+          command: /usr/share/elasticsearch/bin/elasticsearch-users useradd {{ elasticsearch_user }} -p {{ elasticsearch_password }} -r superuser
+        - name: Restart Elasticsearch and make sure it autostarts
+          service: name=elasticsearch state=restarted enabled=yes
+        - name: Wait for Elasticsearch to become available
+          wait_for:
+            port: 9200
+            delay: 5
+        - name: Active the 30 day trial
+          uri:
+            url: "{{elasticsearch_host}}_license/start_trial?acknowledge=true"
+            method: POST
+            user: "{{ elasticsearch_user }}"
+            password: "{{ elasticsearch_password }}"
+            force_basic_auth: true
+            status_code:
+              - 200
+              - 403 #Trial was already activated
+        - name: Register a global index template
+          uri:
+            url: "{{elasticsearch_host}}_template/template_global"
+            body_format: json
+            method: PUT
+            user: "{{ elasticsearch_user }}"
+            password: "{{ elasticsearch_password }}"
+            force_basic_auth: true
+            body:
+              template: "*"
+              settings:
+                number_of_shards: 1
+                number_of_replicas: 0
+                refresh_interval: 1s
+            status_code:
+              - 201
+              - 200
+          run_once: true
+      when: not cloud
+
+
+    - name: Kibana
+      block:
+        - name: Install Kibana
+          apt: deb={{ elastic_download }}/downloads/kibana/kibana-{{ elastic_version }}-amd64.deb
+        - name: Stop Kibana
+          service: name=kibana state=stopped
+        - name: Make Kibana available on all network interfaces
+          lineinfile:
+            dest: /etc/kibana/kibana.yml
+            regexp: '^server.host'
+            line: 'server.host: "0.0.0.0"'
+        - name: Create the Kibana logging directory
+          file:
+            path: /var/log/kibana/
+            state: directory
+            owner: kibana
+            group: kibana
+        - name: Enable persistent Kibana logs
+          lineinfile:
+            dest: /etc/kibana/kibana.yml
+            regexp: '^logging.dest'
+            line: 'logging.dest: /var/log/kibana/kibana.log'
+        - name: Set the username for the Elasticsearch user
+          lineinfile:
+            dest: /etc/kibana/kibana.yml
+            regexp: "^elasticsearch.username"
+            line: "elasticsearch.username: {{ elasticsearch_user }}"
+            state: present
+        - name: Set the password for the Elasticsearch user
+          lineinfile:
+            dest: /etc/kibana/kibana.yml
+            regexp: "^elasticsearch.password"
+            line: "elasticsearch.password: {{ elasticsearch_password }}"
+            state: present
+        - name: Restart Kibana and make sure it autostarts
+          service: name=kibana state=restarted enabled=yes
+        - name: Wait for Kibana to become available, since later steps depend on this
+          wait_for:
+            port: 5601
+            delay: 5
+        - name: Check if Kibana is available locally
+          uri:
+            url: "http://localhost:5601"
+          retries: 24 # 24*5s = 2min
+          delay: 5
+          ignore_errors: true
+      when: not cloud
+
+
+    - name: Beats
+      block:
+        - name: Stop Auditd since it cannot run in parallel with Auditbeat
+          service: name=auditd state=stopped enabled=no
+        - name: Set the Elasticsearch password for Beats
+          lineinfile:
+            dest: /tmp/cred
+            line: "{{ elasticsearch_password }}"
+            state: present
+            create: yes
+            mode: 0600
+        - name: Get the Beats
+          apt: deb={{ elastic_download }}/downloads/beats/{{ item }}/{{ item }}-{{ elastic_version }}-amd64.deb force_apt_get=yes
+          loop:
+          - auditbeat
+          - filebeat
+          - heartbeat
+          - metricbeat
+          - packetbeat
+        - name: Change the Beats configuration
+          template: "src=templates/{{ item }}.yml dest=/etc/{{ item }}/{{ item }}.yml"
+          loop:
+          - auditbeat
+          - filebeat
+          - heartbeat
+          - metricbeat
+          - packetbeat
+        - name: Create the Beats keystores
+          command: "{{ item }} keystore create --force"
+          loop:
+          - auditbeat
+          - filebeat
+          - heartbeat
+          - metricbeat
+          - packetbeat
+        - name: Set the password in the Beats keystore files
+          shell: cat /tmp/cred | {{ item }} keystore add ES_PWD --stdin --force
+          loop:
+          - auditbeat
+          - filebeat
+          - heartbeat
+          - metricbeat
+          - packetbeat
+        - name: Remove the password file
+          file:
+            path: /tmp/cred
+            state: absent
+        - name: Run the setup for all the beats (except Heartbeat — not needed)
+          shell: "{{ item }} setup"
+          loop:
+          - auditbeat
+          - filebeat
+          - metricbeat
+          - packetbeat
+        - name: Restart and make sure the Beats autostart
+          service: name={{ item }} state=restarted enabled=yes
+          loop:
+          - auditbeat
+          - filebeat
+          - heartbeat-elastic
+          - metricbeat
+          - packetbeat
+        - name: Wait if the Beats are actually running
+          pause: minutes=1
+          when: not cloud
+        - name: Get the state of all services and check the status of Auditbeat
+          service_facts: ~
+          failed_when: ansible_facts.services.auditbeat.state != "running"
+          when: not cloud
+        - name: Get the state of all services and check the status of Filebeat
+          service_facts: ~
+          failed_when: ansible_facts.services.filebeat.state != "running"
+          when: not cloud
+        - name: Get the state of all services and check the status of Heartbeat
+          service_facts: ~
+          failed_when: ansible_facts.services["heartbeat-elastic"].state != "running"
+          when: not cloud
+        - name: Get the state of all services and check the status of Metricbeat
+          service_facts: ~
+          failed_when: ansible_facts.services.metricbeat.state != "running"
+          when: not cloud
+        - name: Get the state of all services and check the status of Packetbeat
+          service_facts: ~
+          failed_when: ansible_facts.services.packetbeat.state != "running"
+          when: not cloud
+
+
+    - name: nginx
+      block:
+        - name: Install nginx
+          apt: name=nginx force_apt_get=yes
+        - name: Restart Auditbeat to make sure it picks up the newly monitored directory
+          service: name=auditbeat state=restarted
+        - name: Restart nginx and make sure it autostarts
+          service: name=nginx state=restarted enabled=yes
+
+
+    # Get firejail for seccomp demos
+    - name: Get and install seccomp
+      apt: deb=https://netix.dl.sourceforge.net/project/firejail/firejail/firejail_0.9.62_1_amd64.deb
