@@ -42,7 +42,7 @@ processors:
 - add_host_metadata: ~
 - add_observer_metadata:
     geo:
-      name: europe
+      name: eu-central-1
       location: 50.1105, 8.6822
       continent_name: Europe
       country_iso_code: DE
