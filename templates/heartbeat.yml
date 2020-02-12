@@ -1,18 +1,30 @@
 heartbeat.monitors:
 
+{% if domain is defined and domain %}
 - type: http
+  name: Webserver
   urls: ["https://{{ domain }}"]
   schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
 
 - type: http
+  name: Kibana
   urls: ["https://kibana.{{ domain }}"]
   schedule: "@every 10s"
   timeout: 3s
   check.response.status: 200
+{% else %}
+- type: http
+  name: Webserver
+  urls: ["http://localhost"]
+  schedule: "@every 10s"
+  timeout: 3s
+  check.response.status: 200
+{% endif %}
 
 - type: http
+  name: Elasticsearch
   urls: ["{{ elasticsearch_host }}"]
   username: {{ elasticsearch_user }}
   password: "${ES_PWD}"
