@@ -89,6 +89,11 @@
             regexp: "xpack.security.enabled"
             line: "xpack.security.enabled: true"
             state: present
+        - name: Enable the API key service even without TLS
+          lineinfile:
+            dest: /etc/elasticsearch/elasticsearch.yml
+            regexp: "xpack.security.authc.api_key.enabled"
+            line: "xpack.security.authc.api_key.enabled: true"
         - name: Remove a user for Elasticsearch (just in case we want to make any changes)
           command: /usr/share/elasticsearch/bin/elasticsearch-users userdel {{ elasticsearch_user }}
           ignore_errors: true
@@ -142,6 +147,11 @@
             dest: /etc/kibana/kibana.yml
             regexp: "^server.host"
             line: 'server.host: "0.0.0.0"'
+        - name: Add an encryption key for Kibana
+          lineinfile:
+            dest: /etc/kibana/kibana.yml
+            regexp: "xpack.encryptedSavedObjects.encryptionKey"
+            line: "xpack.encryptedSavedObjects.encryptionKey: \"{{ lookup('password', '/dev/null length=33') }}\""
         - name: Create the Kibana logging directory
           file:
             path: /var/log/kibana/
