@@ -102,7 +102,7 @@
             delay: 5
         - name: Active the 30 day trial
           uri:
-            url: "{{elasticsearch_host}}_license/start_trial?acknowledge=true"
+            url: "{{ elasticsearch_host }}_license/start_trial?acknowledge=true"
             method: POST
             user: "{{ elasticsearch_user }}"
             password: "{{ elasticsearch_password }}"
@@ -112,7 +112,7 @@
               - 403 #Trial was already activated
         - name: Register a global index template
           uri:
-            url: "{{elasticsearch_host}}_template/template_global"
+            url: "{{ elasticsearch_host }}_template/template_global"
             body_format: json
             method: PUT
             user: "{{ elasticsearch_user }}"
