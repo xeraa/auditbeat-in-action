@@ -10,16 +10,24 @@
     "sensitive-variables": [ "aws_access_key", "aws_secret_key" ],
     "builders": [
         {
-          "type": "amazon-ebs",
-          "access_key": "{{ user `aws_access_key` }}",
-          "secret_key": "{{ user `aws_secret_key` }}",
-          "region": "{{ user `aws_region` }}",
-          "source_ami": "{{ user `source_ami` }}",
-          "instance_type": "t2.medium",
-          "associate_public_ip_address": true,
-          "ssh_username": "ubuntu",
-          "ami_name": "auditbeat-siem-{{ user `stack_version` }}-{{ timestamp }}",
-          "ami_groups": [ "all" ]
+            "type": "amazon-ebs",
+            "access_key": "{{ user `aws_access_key` }}",
+            "secret_key": "{{ user `aws_secret_key` }}",
+            "region": "{{ user `aws_region` }}",
+            "source_ami": "{{ user `source_ami` }}",
+            "instance_type": "t2.medium",
+            "associate_public_ip_address": true,
+            "ssh_username": "ubuntu",
+            "ami_name": "auditbeat-siem-{{ user `stack_version` }}-{{ timestamp }}",
+            "ami_groups": [ "all" ],
+            "launch_block_device_mappings": [
+                {
+                    "device_name": "/dev/sda1",
+                    "volume_size": 40,
+                    "volume_type": "gp2",
+                    "delete_on_termination": true
+                }
+            ]
         }
     ],
     "provisioners": [
