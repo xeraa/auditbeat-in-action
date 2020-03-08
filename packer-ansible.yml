@@ -5,7 +5,6 @@
 
   vars:
       # Elastic Stack setup
-      elastic_version: 7.6.0
       elastic_download: https://artifacts.elastic.co
       elasticsearch_host: http://localhost:9200/
       elasticsearch_user: admin
@@ -56,7 +55,7 @@
     - name: Elasticsearch
       block:
         - name: Install Elasticsearch
-          apt: deb={{ elastic_download }}/downloads/elasticsearch/elasticsearch-{{ elastic_version }}-amd64.deb
+          apt: deb={{ elastic_download }}/downloads/elasticsearch/elasticsearch-{{ stack_version }}-amd64.deb
         - name: Stop Elasticsearch
           service: name=elasticsearch state=stopped
         - name: Change Elasticsearch's minimum memory usage
@@ -139,7 +138,7 @@
     - name: Kibana
       block:
         - name: Install Kibana
-          apt: deb={{ elastic_download }}/downloads/kibana/kibana-{{ elastic_version }}-amd64.deb
+          apt: deb={{ elastic_download }}/downloads/kibana/kibana-{{ stack_version }}-amd64.deb
         - name: Stop Kibana
           service: name=kibana state=stopped
         - name: Make Kibana available on all network interfaces
@@ -202,7 +201,7 @@
             create: yes
             mode: 0600
         - name: Get the Beats
-          apt: deb={{ elastic_download }}/downloads/beats/{{ item }}/{{ item }}-{{ elastic_version }}-amd64.deb force_apt_get=yes
+          apt: deb={{ elastic_download }}/downloads/beats/{{ item }}/{{ item }}-{{ stack_version }}-amd64.deb force_apt_get=yes
           loop:
           - auditbeat
           - filebeat

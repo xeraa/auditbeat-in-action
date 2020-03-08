@@ -5,7 +5,7 @@
         "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
         "aws_region": "eu-central-1",
         "source_ami": "ami-0b418580298265d5c",
-        "stack_version": "7.6.0"
+        "stack_version": "7.6.1"
     },
     "sensitive-variables": [ "aws_access_key", "aws_secret_key" ],
     "builders": [
@@ -41,7 +41,8 @@
         {
             "type": "ansible-local",
             "playbook_file": "packer-ansible.yml",
-            "playbook_dir": "."
+            "playbook_dir": ".",
+            "extra_arguments": [ "--extra-vars 'stack_version={{user `stack_version`}}'" ]
         }
     ]
 }
