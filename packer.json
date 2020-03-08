@@ -5,6 +5,7 @@
         "aws_secret_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
         "aws_region": "eu-central-1",
         "source_ami": "ami-0b418580298265d5c",
+        "disk_size": "40",
         "stack_version": "7.6.1"
     },
     "sensitive-variables": [ "aws_access_key", "aws_secret_key" ],
@@ -23,7 +24,7 @@
             "launch_block_device_mappings": [
                 {
                     "device_name": "/dev/sda1",
-                    "volume_size": 40,
+                    "volume_size": "{{ user `disk_size` }}",
                     "volume_type": "gp2",
                     "delete_on_termination": true
                 }
