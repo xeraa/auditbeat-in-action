@@ -98,8 +98,16 @@
           ignore_errors: true
         - name: Create a user for Elasticsearch
           command: /usr/share/elasticsearch/bin/elasticsearch-users useradd {{ elasticsearch_user }} -p {{ elasticsearch_password }} -r superuser
+        - name: Create a directory for custom Systemd settings on the Elasticsearch service
+          file:
+            path: /etc/systemd/system/elasticsearch.service.d/
+            state: directory
+        - name: Set an extended startup timeout for Elasticsearch
+          copy:
+            content: "[Service]\nTimeoutStartSec=180"
+            dest: /etc/systemd/system/elasticsearch.service.d/startup-timeout.conf
         - name: Restart Elasticsearch and make sure it autostarts
-          service: name=elasticsearch state=restarted enabled=yes
+          systemd: name=elasticsearch state=restarted enabled=yes daemon_reload=yes
         - name: Wait for Elasticsearch to become available
           wait_for:
             port: 9200
