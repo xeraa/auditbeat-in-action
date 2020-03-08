@@ -44,6 +44,14 @@
             "playbook_file": "packer-ansible.yml",
             "playbook_dir": ".",
             "extra_arguments": [ "--extra-vars 'stack_version={{user `stack_version`}}'" ]
+        },
+        {
+            "type": "shell",
+            "timeout": "120s",
+            "expect_disconnect": true,
+            "inline": [
+                "sudo reboot"
+            ]
         }
     ]
 }
