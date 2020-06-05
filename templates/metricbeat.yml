@@ -40,5 +40,10 @@ output.elasticsearch:
   username: "{{ elasticsearch_user }}"
   password: "${ES_PWD}"
 
+setup.kibana:
+  host: "{{ kibana_host }}"
+  username: "{{ elasticsearch_user }}"
+  password: "${ES_PWD}"
+
 #cloud.id: ""
 #cloud.auth: "{{ elasticsearch_user }}:${ES_PWD}"
