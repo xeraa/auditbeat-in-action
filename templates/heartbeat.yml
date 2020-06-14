@@ -49,7 +49,7 @@ processors:
       city_name: Frankfurt
 
 
-xpack.monitoring.enabled: true
+monitoring.enabled: true
 
 
 output.elasticsearch:

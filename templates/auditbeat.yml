@@ -146,7 +146,7 @@ processors:
 - add_host_metadata: ~
 
 
-xpack.monitoring.enabled: true
+monitoring.enabled: true
 
 
 output.elasticsearch:
