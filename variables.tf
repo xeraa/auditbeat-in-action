@@ -32,5 +32,5 @@ variable "zone_id" {}
 # Options: Only change this at your own risk; it will probably break things.
 # Override: -var 'operating_system=ubuntu_16_04'
 variable "operating_system" {
-  default = "ubuntu_18_04"
+  default = "ubuntu_20_04"
 }
