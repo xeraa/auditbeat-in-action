@@ -5,27 +5,27 @@ provider "aws" {
 
 
 # Create the SSH key pair
-resource "aws_lightsail_key_pair" "auditd_key_pair" {
-  name       = "auditd_key_pair"
+resource "aws_lightsail_key_pair" "security_key_pair" {
+  name       = "security_key_pair"
   public_key = file("~/.ssh/id_rsa.pub")
 }
 
 
 # Create the instance and its DNS entries
-resource "aws_lightsail_instance" "instance" {
-  name              = "instance"
+resource "aws_lightsail_instance" "security_instance" {
+  name              = "security_instance"
   availability_zone = "${var.region}a"
   blueprint_id      = var.operating_system
   bundle_id         = var.size
-  key_pair_name     = "auditd_key_pair"
-  depends_on        = [aws_lightsail_key_pair.auditd_key_pair]
+  key_pair_name     = "security_key_pair"
+  depends_on        = [aws_lightsail_key_pair.security_key_pair]
 }
 resource "aws_route53_record" "apex" {
   zone_id = var.zone_id
   name    = var.domain
   type    = "A"
   ttl     = "60"
-  records = [aws_lightsail_instance.instance.public_ip_address]
+  records = [aws_lightsail_instance.security_instance.public_ip_address]
 }
 resource "aws_route53_record" "www" {
   zone_id = var.zone_id
