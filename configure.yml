@@ -8,8 +8,6 @@
     - variables.yml
 
 
-  vars:
-      kibana_basic_auth: "{{ attendee_user }}:{{ attendee_password  }}"
 
 
   pre_tasks:
@@ -90,53 +88,6 @@
 
     - name: Restart SSH
       service: name=ssh state=restarted
-
-
-    # Global Elasticsearch configuration
-    - name: Register a global index template
-      uri:
-        url: "{{elasticsearch_host}}_template/template_global"
-        body_format: json
-        method: PUT
-        user: "{{ elasticsearch_user }}"
-        password: "{{ elasticsearch_password }}"
-        force_basic_auth: true
-        body:
-          template: "*"
-          settings:
-            number_of_shards: 1
-            number_of_replicas: 0
-            refresh_interval: 1s
-        status_code:
-          - 201
-          - 200
-      run_once: true
-
-    - name: Create a role for a user to only view the dashboards
-      uri:
-        url: "{{elasticsearch_host}}_security/role/read_dashboard"
-        body_format: json
-        method: PUT
-        user: "{{ elasticsearch_user }}"
-        password: "{{ elasticsearch_password }}"
-        force_basic_auth: true
-        body: "{{ lookup('file','security_role_dashboard.json') }}"
-        status_code:
-          - 201
-          - 200
-
-    - name: Create the dashboard user
-      uri:
-        url: "{{elasticsearch_host}}_security/user/{{ attendee_user }}"
-        body_format: json
-        method: PUT
-        user: "{{ elasticsearch_user }}"
-        password: "{{ elasticsearch_password }}"
-        force_basic_auth: true
-        body: "{{ lookup('template','security_user_dashboard.json') }}"
-        status_code:
-          - 201
-          - 200
 
 
     # Beats
@@ -249,8 +200,6 @@
           - "{{ inventory_hostname }}"
           - "{{ domain }}"
           - "www.{{ domain }}"
-          - "kibana.{{ domain }}"
-          - "dashboard.{{ domain }}"
 
     - name: Create the certificate
       command: >
