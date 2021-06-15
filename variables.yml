@@ -1,21 +1,7 @@
-# Version to install
-elastic_version: 7.9.2
+# Use the release (could be switched to a private preview build)
 elastic_download: https://artifacts.elastic.co
-
-
-# Elastic Cloud credentials
-elasticsearch_host: "{{ lookup('env','ELASTICSEARCH_HOST') }}"
-elasticsearch_user: "{{ lookup('env','ELASTICSEARCH_USER') }}"
-elasticsearch_password: "{{ lookup('env','ELASTICSEARCH_PASSWORD') }}"
-kibana_host: "{{ lookup('env','KIBANA_HOST') }}"
-kibana_id: "{{ lookup('env','KIBANA_ID') }}"
 
 
 # Setup of the infrastructure
 env: production
 domain: xeraa.wtf
-
-
-# Public credentials for Kibana dashboard-only mode
-attendee_user: admin
-attendee_password: secret

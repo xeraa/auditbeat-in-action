@@ -6,6 +6,7 @@
 
   vars_files:
     - variables.yml
+    - elastic-cloud.yml
 
 
   tasks:

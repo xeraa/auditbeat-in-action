@@ -6,3 +6,4 @@
 *.tfstate.lock.info
 
 .terraform.lock.hcl
+elastic-cloud.yml
