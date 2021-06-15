@@ -11,7 +11,7 @@ resource "aws_lightsail_key_pair" "security_key_pair" {
 }
 
 
-# Create the instance and its DNS entries
+# Create the instance, open ports, and its DNS entries
 resource "aws_lightsail_instance" "security_instance" {
   name              = "security_instance"
   availability_zone = "${var.region}a"
@@ -19,6 +19,33 @@ resource "aws_lightsail_instance" "security_instance" {
   bundle_id         = var.size
   key_pair_name     = "security_key_pair"
   depends_on        = [aws_lightsail_key_pair.security_key_pair]
+}
+resource "aws_lightsail_instance_public_ports" "security_ports" {
+  instance_name = aws_lightsail_instance.security_instance.name
+  # SSH (defaults are overwritten so this must be specified)
+  port_info {
+    protocol  = "tcp"
+    from_port = 22
+    to_port   = 22
+  }
+  # So Let's Encrypt can generate its certificate
+  port_info {
+    protocol  = "tcp"
+    from_port = 80
+    to_port   = 80
+  }
+  # HTTPS
+  port_info {
+    protocol  = "tcp"
+    from_port = 443
+    to_port   = 443
+  }
+  # Port to play with nc
+  port_info {
+    protocol  = "tcp"
+    from_port = 1025
+    to_port   = 1025
+  }
 }
 resource "aws_route53_record" "apex" {
   zone_id = var.zone_id
