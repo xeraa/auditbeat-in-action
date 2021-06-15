@@ -48,19 +48,6 @@
         user: david
         key: "{{ lookup('file', './files/david.pub') }}"
 
-    # Emanuil
-    - name: Add Emanuil's user
-      user:
-        name: emanuil
-        groups: sudo
-        shell: /bin/bash
-        state: present
-
-    - name: Placing key for Emanuil
-      authorized_key:
-        user: emanuil
-        key: "{{ lookup('file', './files/emanuil.pub') }}"
-
     # SSH
     - name: Allow passwordless sudo
       lineinfile:
@@ -98,7 +85,7 @@
       lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^AllowUsers'
-        line: 'AllowUsers ubuntu david emanuil elastic-user elastic-admin'
+        line: 'AllowUsers ubuntu david elastic-user elastic-admin'
         state: present
 
     - name: Restart SSH

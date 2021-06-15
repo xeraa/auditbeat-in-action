@@ -1,0 +1,6 @@
+# Elastic Cloud
+elasticsearch_password: ${elastic-password}
+elasticsearch_host: ${elasticsearch-url}
+elasticsearch_user: ${elastic-user}
+kibana_host: ${kibana-url}
+elastic_version: ${elastic-version}
