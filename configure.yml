@@ -261,4 +261,4 @@
 
     # Get firejail for seccomp demos
     - name: Get and install seccomp
-      apt: deb=https://netix.dl.sourceforge.net/project/firejail/firejail/firejail_0.9.60_1_amd64.deb
+      apt: deb=https://github.com/netblue30/firejail/releases/download/0.9.64.4/firejail_0.9.64.4_1_amd64.deb
